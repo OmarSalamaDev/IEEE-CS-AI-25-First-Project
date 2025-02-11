@@ -1,16 +1,35 @@
 
+from Book import Book
 
-books = []
+# List to store books added
+library = []
 
 
 #------------------------------------------------------------------------------------
 
 
-# todo add book -> Ahmed
+# todo add_book() -> Ahmed
 # Input: book details 
 # Output: return true if book added successfully, false if not
-def add_book(title, author, price, description, isbn, category, publisher):
-    return False
+def add_book(title, author, price, description, isbn, category):
+    is_adding = True 
+
+    # Loop in case of wanting to add multiple books at once
+    while is_adding: 
+        new_book = {
+            "Book Title": Book.set_book(), 
+            "Book Author": Book.set_author(),
+            "Book Price" : Book.set_price(),
+            "Book Description": Book.set_description(),
+            "Book ISBN": Book.set_isbn(), 
+            "Book Category": Book.set_category
+        }
+        library.append(new_book)
+
+        if input("Do you wish to add another book? (Y/N): ").lower() == "n":
+            is_adding = False
+
+    return True
 
 
 #------------------------------------------------------------------------------------
@@ -20,7 +39,9 @@ def add_book(title, author, price, description, isbn, category, publisher):
 # Input: none
 # Output: return a list of all books
 def view_books():
-    return False
+    # Check output format with respect to GUI
+    pass
+    
 
 
 #------------------------------------------------------------------------------------
@@ -30,7 +51,13 @@ def view_books():
 # Input: book title
 # Output: return the book if found, otherwise return an empty list
 def search_book(title):
-    return []
+    found_book = [book for book in library if book["Book Title"].lower() ==title.lower()]
+    
+    if not found_book:
+        print(f"No books found with title: {title}.")
+    else:
+        for book in found_book:
+            print(f"{book['Book Title']} by {book['Book Author']} (ISBN: {book['Book ISBN']})")
 
 
 #------------------------------------------------------------------------------------
@@ -40,7 +67,13 @@ def search_book(title):
 # Input: book isbn
 # Output: return the book if found, otherwise return an empty list
 def search_book(isbn):
-    return []
+    found_book = [book for book in library if book["Book ISBN"].lower() == isbn.lower()]
+    
+    if not found_book:
+        print(f"No book ISBN matches {isbn}.")
+    else:
+        for book in found_book:
+            print(f"{book['Book Title']} by {book['Book Author']} (ISBN: {book['Book ISBN']})")
 
 
 #------------------------------------------------------------------------------------
