@@ -5,29 +5,29 @@ from Book import Book
 library = []
 
 
-#------------------------------------------------------------------------------------
-
+# Generate ISBN (formatted as 10-digit number)
+def generate_isbn(index):
+    return str(index + 1).zfill(10)
 
 # todo add_book() -> Ahmed
 # Input: book details 
 # Output: return true if book added successfully, false if not
-def add_book(title, author, price, description, isbn, category):
-    is_adding = True 
+def add_book(title, author, price, description, category):
+    isbn = generate_isbn(len(library))  # Auto-generate ISBN
+    book = Book(title, author, isbn, price, description, category)
+    library.append(book)
 
-    # Loop in case of wanting to add multiple books at once
-    while is_adding: 
-        new_book = {
-            "Book Title": Book.set_book(), 
-            "Book Author": Book.set_author(),
-            "Book Price" : Book.set_price(),
-            "Book Description": Book.set_description(),
-            "Book ISBN": Book.set_isbn(), 
-            "Book Category": Book.set_category
-        }
-        library.append(new_book)
+    inserted = False # to check if there is an empty slot mid array
+    for i in range(len(library)):
+        if library[i] is None:  # Empty slot found
+            library[i] = book
+            inserted = True
+            break
+        
+    # If no empty slots, append normally
+    if not inserted:
+        library.append(book)
 
-        if input("Do you wish to add another book? (Y/N): ").lower() == "n":
-            is_adding = False
 
     return True
 
@@ -39,9 +39,12 @@ def add_book(title, author, price, description, isbn, category):
 # Input: none
 # Output: return a list of all books
 def view_books():
-    # Check output format with respect to GUI
-    pass
-    
+    if not library:
+        return False
+    else:
+        for book in library:
+            print(book) 
+        return True
 
 
 #------------------------------------------------------------------------------------
@@ -50,14 +53,9 @@ def view_books():
 # todo search book by title -> Ahmed
 # Input: book title
 # Output: return the book if found, otherwise return an empty list
-def search_book(title):
-    found_book = [book for book in library if book["Book Title"].lower() ==title.lower()]
-    
-    if not found_book:
-        print(f"No books found with title: {title}.")
-    else:
-        for book in found_book:
-            print(f"{book['Book Title']} by {book['Book Author']} (ISBN: {book['Book ISBN']})")
+def search_book_by_title(title):
+    found_books = [book for book in library if book.get_title().lower() == title.lower()]
+    return found_books 
 
 
 #------------------------------------------------------------------------------------
@@ -66,16 +64,9 @@ def search_book(title):
 # todo search book by isbn -> Ahmed
 # Input: book isbn
 # Output: return the book if found, otherwise return an empty list
-def search_book(isbn):
-    found_book = [book for book in library if book["Book ISBN"].lower() == isbn.lower()]
-    
-    if not found_book:
-        print(f"No book ISBN matches {isbn}.")
-    else:
-        for book in found_book:
-            print(f"{book['Book Title']} by {book['Book Author']} (ISBN: {book['Book ISBN']})")
-
-
+def search_book_by_isbn(isbn):
+    found_books = [book for book in library if book.get_isbn() == isbn]
+    return found_books
 #------------------------------------------------------------------------------------
 
 
