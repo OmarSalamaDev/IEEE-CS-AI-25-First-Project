@@ -115,6 +115,9 @@ def create_search_book_screen(root):
             books_table.delete(row)
 
         books = search_book_by_title(text)
+        if books == []:
+            error_msg.set("No books found.")
+            return
         for book in books:
             books_table.insert("", "end", values=[
                 book.title, book.author, book.price, book.description, book.category, book.publisher
