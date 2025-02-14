@@ -1,8 +1,3 @@
-import tkinter as tk
-from ui.button import *
-from ui.screens_creator import *
-
-
 # window setup
 root = tk.Tk()
 root.title("Library Management System")
