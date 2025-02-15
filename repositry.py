@@ -49,7 +49,7 @@ def search_book_by_title(title):
     if not title.strip():
         return []
     title = title.lower()
-    return [book for book in library if title in book.title.lower()]
+    return [book for book in library if title == book.title.lower()]
 
 
 
@@ -59,7 +59,7 @@ def search_book_by_title(title):
 # Input: book isbn
 # Output: return the book if found, otherwise return an empty list
 def search_book_by_isbn(isbn):
-    found_books = [book for book in library if book.get_isbn() == isbn]
+    found_books = [book for book in library if book.isbn == isbn]
     return found_books
 
 
@@ -69,7 +69,6 @@ def search_book_by_isbn(isbn):
 # Input: book isbn
 # Output: return true if book updated successfully, false if not
 def update_book(isbn):
-    """ Update book details by ISBN. Returns True if successful, False otherwise """
     for book in library:
         if book["Book ISBN"] == isbn:
             updates = update_helper_function(book)
@@ -118,20 +117,13 @@ def update_helper_function(book):
 # Input: book isbn
 # Output: return true if book updated successfully, false if not
 def delete_book(isbn):
-    """ Delete a book by ISBN. Returns True if deleted, False otherwise. """
-    for i, book in enumerate(library):
-        if book["Book ISBN"] == isbn:
-            print("\nFound book to delete:\n")
-            confirm = input(f"Are you sure you want to delete this book {book['Book Title']}? (Y/N)").lower()
-            if confirm == 'y':
-                del library[i]
-                print("Book deleted successully.")
-                return True
-            else:
-                print("Deletion canceled")
-                return False
-    print(f"No book found with ISBN: {isbn}!")
-    return False
+    book = search_book_by_isbn(isbn)
+    if book == []:
+        return False
+    
+    library.remove(book[0])
+    save_to_file()
+    return True
 
 
 #------------------------------------------------------------------------------------

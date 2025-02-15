@@ -3,6 +3,7 @@ from tkinter import ttk
 from ui.text_field import text_field
 from ui.button import button
 from ui.table import table
+from ui.select_menu import select_menu
 from repositry import *
 
 
@@ -15,6 +16,7 @@ def create_main_screen(root):
 
 
 def create_add_book_screen(root):
+    
     add_book_screen = tk.Frame(root, bg="#eeeeee", padx=10, pady=10)
     tk.Label(add_book_screen, text="Enter book details to add a new book to the library.").pack(pady=10)
 
@@ -87,9 +89,9 @@ def create_view_books_screen(root):
         books_table.delete(row)
 
     for book in booksList:
-        books_table.insert("", "end", values=[book.author, book.title, book.price, book.description, book.category, book.publisher])
+        books_table.insert("", "end", values=[book.title, book.author, book.price, book.description, book.category, book.publisher])
 
-    error_label = tk.Label(view_books_screen, textvariable=error_msg, fg="red").pack(pady=2)
+    tk.Label(view_books_screen, textvariable=error_msg, fg="red").pack(pady=2)
 
     return view_books_screen
 
@@ -105,7 +107,8 @@ def create_search_book_screen(root):
     books_table = table(search_book_screen, "Title", "Author", "Price", "Description", "Category", "Publisher")
 
     def getBook(text):
-        if not text.strip():
+        print(text)
+        if text == "" or text == "Search by title...":
             error_msg.set("Please enter a search term.")
             return
         else:
@@ -123,10 +126,95 @@ def create_search_book_screen(root):
                 book.title, book.author, book.price, book.description, book.category, book.publisher
             ])
 
-    search = text_field(search_book_screen, "Search by name...")
+    search = text_field(search_book_screen, "Search by title...")
     button(search_book_screen, "Search", lambda: getBook(search.get()))
 
-    error_label = tk.Label(search_book_screen, textvariable=error_msg, fg="red")
-    error_label.pack(pady=2)
+    tk.Label(search_book_screen, textvariable=error_msg, fg="red").pack(pady=2)
 
     return search_book_screen
+
+
+def create_edit_book_screen(root):
+
+    load_from_file()
+
+    edit_book_screen = tk.Frame(root, bg="#eeeeee", padx=10, pady=10)
+    tk.Label(edit_book_screen, text="Search for a book in the library.").pack(pady=10)
+
+    error_msg = tk.StringVar()
+    error_msg.set("")
+    success_msg = tk.StringVar()
+    success_msg.set("")
+    
+    books = view_books()
+    if books == []:
+        error_msg.set("No books found.")
+        return edit_book_screen
+    
+    books_list = [book.title for book in books]
+    selected_book = select_menu(edit_book_screen, books_list)
+
+    def del_Book():
+        if selected_book.get() == "":
+            error_msg.set("Please select a book to delete.")
+            success_msg.set("")
+            return edit_book_screen
+        
+        if delete_book(books[books_list.index(selected_book.get())].isbn):
+            error_msg.set("")
+            success_msg.set("Book deleted successfully.")
+            selected_book.set("")
+        else:
+            error_msg.set("An error occurred, please try again.")
+            success_msg.set("")
+
+
+    button(edit_book_screen, "Delete", lambda: del_Book())
+
+    tk.Label(edit_book_screen, textvariable=error_msg, fg="red").pack(pady=2)
+    tk.Label(edit_book_screen, textvariable=success_msg, fg="green").pack(pady=2)
+
+    return edit_book_screen
+
+
+def create_delete_book_screen(root):
+
+    load_from_file()
+
+    edit_book_screen = tk.Frame(root, bg="#eeeeee", padx=10, pady=10)
+    tk.Label(edit_book_screen, text="Search for a book in the library.").pack(pady=10)
+
+    error_msg = tk.StringVar()
+    error_msg.set("")
+    success_msg = tk.StringVar()
+    success_msg.set("")
+    
+    books = view_books()
+    if books == []:
+        error_msg.set("No books found.")
+        return edit_book_screen
+    
+    books_list = [book.title for book in books]
+    selected_book = select_menu(edit_book_screen, books_list)
+
+    def del_Book():
+        if selected_book.get() == "":
+            error_msg.set("Please select a book to delete.")
+            success_msg.set("")
+            return edit_book_screen
+        
+        if delete_book(books[books_list.index(selected_book.get())].isbn):
+            error_msg.set("")
+            success_msg.set("Book deleted successfully.")
+            selected_book.set("")
+        else:
+            error_msg.set("An error occurred, please try again.")
+            success_msg.set("")
+
+
+    button(edit_book_screen, "Delete", lambda: del_Book())
+
+    tk.Label(edit_book_screen, textvariable=error_msg, fg="red").pack(pady=2)
+    tk.Label(edit_book_screen, textvariable=success_msg, fg="green").pack(pady=2)
+
+    return edit_book_screen
